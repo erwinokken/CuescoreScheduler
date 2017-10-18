@@ -11,7 +11,7 @@ namespace CuescoreScheduleWeb
 {
 
 
-    public partial class About
+    public partial class WebForm1
     {
     }
 }
