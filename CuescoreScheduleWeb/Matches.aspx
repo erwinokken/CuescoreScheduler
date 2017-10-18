@@ -8,7 +8,7 @@
         <table class="lead" style="width:100%;">
         <%
         var i = 0;
-        foreach (var appointment in GetAppointments()) { %>
+        foreach (var appointment in Appointments) { %>
             <tr>
                 <td><%: (i+1) %></td>
                 <td><%: appointment.Name %></td>
@@ -20,6 +20,6 @@
         }
         %>
         </table>
-        <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Download ICAL &raquo;</a></p>
+        <p><asp:LinkButton class="btn btn-primary btn-lg" ID="Download_ICAL" runat="server" OnClick="DownloadICAL">Download ICAL &raquo;</asp:LinkButton></p>
     </div>
 </asp:Content>

@@ -11,5 +11,14 @@ namespace CuescoreScheduleWeb {
     
     
     public partial class _Matches {
+        
+        /// <summary>
+        /// Download_ICAL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton Download_ICAL;
     }
 }

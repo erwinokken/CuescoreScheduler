@@ -15,6 +15,7 @@ namespace CuescoreScheduleWeb
         private HtmlDocument leagueDocument;
         public string LeagueID;
         public string TeamName;
+        public List<Appointment> Appointments;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,11 +23,17 @@ namespace CuescoreScheduleWeb
             LeagueID = Request.Url.Segments[2];
             TeamName = Request.Url.Segments[3];
             leagueDocument = parser.GetLeagueDocument(LeagueID);
+            Appointments = parser.GetTeamAppointments(leagueDocument, Uri.UnescapeDataString(TeamName));
         }
 
-        protected List<Appointment> GetAppointments()
+        public void DownloadICAL(Object sender, EventArgs e)
         {
-            return parser.GetTeamAppointments(leagueDocument, Uri.UnescapeDataString(TeamName));
+            Response.AddHeader("Content-Type", "application/octet-stream");
+            Response.AddHeader("Content-Transfer-Encoding", "Text");
+            Response.AddHeader("Content-disposition", "attachment; filename=\"" + TeamName + ".ics\"");
+            var content = ICALGenerator.GetICALEventsContent(Appointments);
+            Response.Write(content);
+            Response.End();
         }
     }
 }

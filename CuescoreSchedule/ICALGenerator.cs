@@ -31,7 +31,7 @@ namespace CuescoreSchedule
         {
             return string.Format(@"BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Cronair CueScoreScheduler//EN
+PRODID:-//ProPool CueScoreScheduler//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH{0}
 END:VCALENDAR", icalcontent);
@@ -42,7 +42,7 @@ END:VCALENDAR", icalcontent);
             return string.Format(@"
 BEGIN:VEVENT
 DTSTAMP:{0}
-ORGANIZER;CN=Erwin Okken:MAILTO:erwin@erwinokken.nl
+ORGANIZER;CN=Erwin Okken:MAILTO:info@propoolapp.com
 UID:cuescore-{1}
 DTSTART:{1}
 DTEND:{2}
