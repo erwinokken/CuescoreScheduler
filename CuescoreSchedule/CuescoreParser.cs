@@ -20,7 +20,7 @@ using System.IO;
  */
 namespace CuescoreSchedule
 {
-    class CuescoreParser
+    public class CuescoreParser
     {
         // Example: https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571
         private const string LEAGUE_URL = "https://cuescore.com/tournament/league_title/{0}";

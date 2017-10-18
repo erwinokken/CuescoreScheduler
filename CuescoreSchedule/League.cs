@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CuescoreSchedule
 {
-    class League
+    public class League
     {
         public string ID { get; set; }
         public string Name { get; set; }

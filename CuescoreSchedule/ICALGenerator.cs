@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CuescoreSchedule
 {
-    class ICALGenerator
+    public class ICALGenerator
     {
         public static void SaveToFile(List<Appointment> appointments)
         {

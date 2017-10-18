@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CuescoreSchedule
 {
-    class Appointment
+    public class Appointment
     {
         public string Name { get; set; }
         public DateTime DateTime { get; set; }
