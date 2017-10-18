@@ -9,7 +9,7 @@
         <%
         var i = 0;
         foreach (var league in GetLeagues()) { %>
-            <a href="">
+            <a href="/Teams/<%:league.ID %>">
             <%: (i+1) + ". " + league.Name %>
             </a>
             <br />
@@ -18,10 +18,10 @@
         }
         %>
         </p>
-        <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Kies Team &raquo;</a></p>
+        <%--<p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Kies Team &raquo;</a></p>--%>
     </div>
 
-    <div class="row">
+<%--    <div class="row">
         <div class="col-md-4">
             <h2>Getting started</h2>
             <p>
@@ -50,6 +50,6 @@
                 <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301950">Learn more &raquo;</a>
             </p>
         </div>
-    </div>
+    </div>--%>
 
 </asp:Content>

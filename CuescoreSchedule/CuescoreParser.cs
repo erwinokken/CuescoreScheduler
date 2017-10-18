@@ -69,7 +69,7 @@ namespace CuescoreSchedule
         {
             // Download data
             WebClient client = new WebClient();
-            var data = client.DownloadData(string.Format(LEAGUE_URL, leagueId));
+            var data = client.DownloadData(string.Format(LEAGUE_URL, leagueId.Replace("/", "")));
             var html = Encoding.UTF8.GetString(data);
 
             // Parse HTML

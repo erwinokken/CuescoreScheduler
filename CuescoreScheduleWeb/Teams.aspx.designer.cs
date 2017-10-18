@@ -10,6 +10,6 @@
 namespace CuescoreScheduleWeb {
     
     
-    public partial class _Default {
+    public partial class _Teams {
     }
 }
