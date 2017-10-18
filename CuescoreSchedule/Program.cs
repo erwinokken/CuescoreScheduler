@@ -12,14 +12,29 @@ namespace CuescoreSchedule
 
         static void Main(string[] args)
         {
-            CuescoreParser parser = new CuescoreParser("https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571");
-            var document = parser.GetDocument();
-            if (SHOW_ERRORS && document.ParseErrors != null && document.ParseErrors.Count() > 0)
+            CuescoreParser parser = new CuescoreParser();
+
+            var leaguesDocument = parser.GetLeaguesDocument();
+            var leagues = parser.GetLeagues(leaguesDocument);
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine("For which league do you want to select a team:");
+            Console.WriteLine("");
+            
+            for(var i=0;i<leagues.Count;i++)
+            {
+                Console.WriteLine((i + 1) + ". " + leagues[i].Name);
+            }
+
+            var inputLeagueNr = Convert.ToInt16(Console.ReadLine());
+            var inputLeague = leagues[inputLeagueNr - 1];
+
+            var leagueDocument = parser.GetLeagueDocument(inputLeague.ID);
+            if (SHOW_ERRORS && leagueDocument.ParseErrors != null && leagueDocument.ParseErrors.Count() > 0)
             {
                 Console.WriteLine("----------------------------------------");
                 Console.WriteLine("PARSE ERRORS FOUND");
                 Console.WriteLine("----------------------------------------");
-                foreach (var error in document.ParseErrors)
+                foreach (var error in leagueDocument.ParseErrors)
                 {
                     Console.WriteLine(" - " + error.Reason);
                 }
@@ -28,17 +43,23 @@ namespace CuescoreSchedule
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("For which team do you want the schedule:");
             Console.WriteLine("");
-            var teams = parser.GetTeams(document);
+            var teams = parser.GetTeams(leagueDocument);
+
+            for (var i = 0; i < teams.Count(); i++)
+            {
+                Console.WriteLine((i + 1) + ". " + teams[i]);
+            }
+
             var inputTeamNr = Convert.ToInt16(Console.ReadLine());
 
             var inputTeam = teams[inputTeamNr - 1];
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("Speelschema voor " + inputTeam + ":");
             Console.WriteLine("");
-            var appointments = parser.GetTeamAppointments(document, inputTeam);
+            var appointments = parser.GetTeamAppointments(leagueDocument, inputTeam);
             foreach(var appointment in appointments)
             {
-                Console.Write(string.Format("{0,-27}", appointment.Name) + string.Format("{0,-27}", appointment.Location) + string.Format("{0,-27}", appointment.DateTime.ToString("dd-MM-yyyy HH:mm")));
+                Console.Write(string.Format("{0,-35}", appointment.Name) + string.Format("{0,-35}", appointment.Location) + string.Format("{0,-35}", appointment.DateTime.ToString("dd-MM-yyyy HH:mm")));
                 Console.WriteLine();
             }
 

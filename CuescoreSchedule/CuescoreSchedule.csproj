@@ -50,6 +50,7 @@
     <Compile Include="Appointment.cs" />
     <Compile Include="CuescoreParser.cs" />
     <Compile Include="ICALGenerator.cs" />
+    <Compile Include="League.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
