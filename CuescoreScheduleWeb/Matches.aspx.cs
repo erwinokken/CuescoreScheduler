@@ -20,10 +20,13 @@ namespace CuescoreScheduleWeb
         protected void Page_Load(object sender, EventArgs e)
         {
             parser = new CuescoreParser();
-            LeagueID = Request.Url.Segments[2];
-            TeamName = Request.Url.Segments[3];
-            leagueDocument = parser.GetLeagueDocument(LeagueID);
-            Appointments = parser.GetTeamAppointments(leagueDocument, Uri.UnescapeDataString(TeamName));
+            if (Request.Url.Segments.Count() >= 4)
+            {
+                LeagueID = Request.Url.Segments[2];
+                TeamName = Request.Url.Segments[3];
+                leagueDocument = parser.GetLeagueDocument(LeagueID);
+                Appointments = parser.GetTeamAppointments(leagueDocument, HttpUtility.UrlDecode(TeamName));
+            }
         }
 
         public void DownloadICAL(Object sender, EventArgs e)

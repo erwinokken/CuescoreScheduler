@@ -19,8 +19,11 @@ namespace CuescoreScheduleWeb
         protected void Page_Load(object sender, EventArgs e)
         {
             parser = new CuescoreParser();
-            LeagueID = Request.Url.Segments[2];
-            leagueDocument = parser.GetLeagueDocument(LeagueID);
+            if (Request.Url.Segments.Count() >= 3)
+            {
+                LeagueID = Request.Url.Segments[2];
+                leagueDocument = parser.GetLeagueDocument(LeagueID);
+            }
         }
 
         protected List<string> GetTeams()

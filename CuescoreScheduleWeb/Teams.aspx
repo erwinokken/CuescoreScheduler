@@ -9,7 +9,7 @@
         <%
         var i = 0;
         foreach (var team in GetTeams()) { %>
-            <a href="/Matches/<%: LeagueID + "/" + team %>">
+            <a href="/Matches/<%: LeagueID + "/" + HttpUtility.UrlEncode(team) %>">
             <%: (i+1) + ". " + team %>
             </a>
             <br />
