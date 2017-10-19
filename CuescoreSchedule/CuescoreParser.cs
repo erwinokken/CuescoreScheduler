@@ -6,6 +6,8 @@ using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Web;
+using System.Web.Caching;
 
 /*
  *  Bugs:
@@ -33,18 +35,30 @@ namespace CuescoreSchedule
             _currentYear = DateTime.Now.Year;
         }
 
-        public HtmlDocument GetLeaguesDocument()
+        private HtmlDocument GetDocumentCache(string url)
+        {
+            if (HttpRuntime.Cache[url] == null)
+                CacheDocument(url);
+
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml((string)HttpRuntime.Cache[url]);
+            return document;
+            
+        }
+
+        private void CacheDocument(string url)
         {
             // Download data
             WebClient client = new WebClient();
-            var data = client.DownloadData(LEAGUES_URL);
+            var data = client.DownloadData(url);
             var html = Encoding.UTF8.GetString(data);
 
-            // Parse HTML
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
+            HttpRuntime.Cache.Insert(url, html, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
+        }
 
-            return document;
+        public HtmlDocument GetLeaguesDocument()
+        {
+            return GetDocumentCache(LEAGUES_URL);
         }
 
         public List<League> GetLeagues(HtmlDocument document)
@@ -67,16 +81,7 @@ namespace CuescoreSchedule
 
         public HtmlDocument GetLeagueDocument(string leagueId)
         {
-            // Download data
-            WebClient client = new WebClient();
-            var data = client.DownloadData(string.Format(LEAGUE_URL, leagueId.Replace("/", "")));
-            var html = Encoding.UTF8.GetString(data);
-
-            // Parse HTML
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(html);
-
-            return document;
+            return GetDocumentCache(string.Format(LEAGUE_URL, leagueId.Replace("/", "")));
         }
 
         public List<string> GetTeams(HtmlDocument document)
