@@ -47,7 +47,7 @@ UID:cuescore-{1}
 DTSTART:{1}
 DTEND:{2}
 CLASS:PRIVATE
-DESCRIPTION:{3}
+DESCRIPTION:{3} - Data from cuescore.com - Created by propoolapp.com
 SUMMARY:{3}
 TRANSP:OPAQUE
 LOCATION:{4}
