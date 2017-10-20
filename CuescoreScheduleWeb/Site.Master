@@ -94,7 +94,7 @@
             </asp:ContentPlaceHolder>
             <hr />
             <footer>
-                <p><a href="https://www.propoolapp.com">&copy; <%: DateTime.Now.Year %> - ProPoolApp.com</a>,  <a href="https://github.com/erwinokken/CuescoreScheduler">This is open source - Check Github</a></p>
+                <p><a href="https://www.propoolapp.com">&copy; <%: DateTime.Now.Year %> - ProPoolApp.com</a>,  <a href="https://github.com/erwinokken/CuescoreScheduler">Check Github</a></p>
             </footer>
         </div>
     </form>

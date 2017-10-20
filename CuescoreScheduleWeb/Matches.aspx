@@ -21,5 +21,6 @@
         }
         %>
         </table>
+        <p><asp:LinkButton class="btn btn-primary btn-lg" ID="LinkButton1" runat="server" OnClick="DownloadICAL">Download ICAL &raquo;</asp:LinkButton></p>
     </div>
 </asp:Content>
