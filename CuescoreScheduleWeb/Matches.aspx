@@ -4,6 +4,7 @@
 
     <div class="jumbotron">
         <h1>Cuescore Scheduler</h1>
+        <p><asp:LinkButton class="btn btn-primary btn-lg" ID="Download_ICAL" runat="server" OnClick="DownloadICAL">Download ICAL &raquo;</asp:LinkButton></p>
         <h2>Bekijk schema</h2>
         <table class="lead" style="width:100%;">
         <%
@@ -20,6 +21,5 @@
         }
         %>
         </table>
-        <p><asp:LinkButton class="btn btn-primary btn-lg" ID="Download_ICAL" runat="server" OnClick="DownloadICAL">Download ICAL &raquo;</asp:LinkButton></p>
     </div>
 </asp:Content>

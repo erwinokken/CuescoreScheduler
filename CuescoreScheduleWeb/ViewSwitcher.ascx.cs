@@ -26,6 +26,10 @@ namespace CuescoreScheduleWeb
             // Determine alternate view
             AlternateView = isMobile ? "Desktop" : "Mobile";
 
+            // Dont use mobile
+            CurrentView = "Desktop";
+            AlternateView = "Desktop";
+
             // Create switch URL from the route, e.g. ~/__FriendlyUrls_SwitchView/Mobile?ReturnUrl=/Page
             var switchViewRouteName = "AspNet.FriendlyUrls.SwitchView";
             var switchViewRoute = RouteTable.Routes[switchViewRouteName];
