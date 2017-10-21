@@ -132,6 +132,10 @@ namespace CuescoreSchedule
 
         private DateTime StringToDateTime(string datestr)
         {
+            if (datestr.Trim().Equals(String.Empty))
+            {
+                return DateTime.MinValue;
+            }
             var dateArray = datestr.Replace("  ", " ").Replace(".", " ").Split(' '); // Fri, 12, Jan, 19:00
             var validDateTimeStr = dateArray[1] + ' ' + dateArray[2] + ' ' + _currentYear + ' ' + dateArray[3];
             var result = DateTime.ParseExact(validDateTimeStr.Replace("  ", " ").Replace(".", " "), "d MMM yyyy HH:mm", CultureInfo.InvariantCulture);

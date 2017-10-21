@@ -30,5 +30,10 @@ namespace CuescoreScheduleWeb
         {
             return parser.GetTeams(leagueDocument);
         }
+
+        protected string UrlEncode(string team)
+        {
+            return HttpUtility.UrlEncode(team).Replace(".", "DOT");
+        }
     }
 }

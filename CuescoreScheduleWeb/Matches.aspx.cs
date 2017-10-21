@@ -25,7 +25,7 @@ namespace CuescoreScheduleWeb
                 LeagueID = Request.Url.Segments[2];
                 TeamName = Request.Url.Segments[3];
                 leagueDocument = parser.GetLeagueDocument(LeagueID);
-                Appointments = parser.GetTeamAppointments(leagueDocument, HttpUtility.UrlDecode(TeamName));
+                Appointments = parser.GetTeamAppointments(leagueDocument, UrlDecode(TeamName));
             }
         }
 
@@ -37,6 +37,12 @@ namespace CuescoreScheduleWeb
             var content = ICALGenerator.GetICALEventsContent(Appointments);
             Response.Write(content);
             Response.End();
+        }
+
+        protected string UrlDecode(string team)
+        {
+            var decoded = HttpUtility.UrlDecode(team).Replace("DOT", ".");
+            return decoded;
         }
     }
 }
