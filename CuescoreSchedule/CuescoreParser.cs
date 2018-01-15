@@ -19,6 +19,7 @@ using System.Web.Caching;
  *      - Bug opgelost waarbij gespeelde wedstrijden niet meegenomen werden
  *      - Bug opgelost waar hij te weinig matches pakte (waar een team thuis speelde)
  *      - Bug opgelost waarbij jaar niet opgehoogt werd. Jaar is niet bekend, stel vorige is December, dus Januari is niet dit jaar, maar volgend jaar.
+ *      - 15-1-2018: Bug opgelost -- AANPASSING VAN CUESCORE --
  */
 namespace CuescoreSchedule
 {
@@ -26,7 +27,7 @@ namespace CuescoreSchedule
     {
         // Example: https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571
         private const string LEAGUE_URL = "https://cuescore.com/tournament/league_title/{0}";
-        private const string LEAGUES_URL = "https://cuescore.com/tournaments/?q=2017%2F2018+Pool&f=01-01-2017&t=31-12-2018&c=0&d=0&s=1";
+        private const string LEAGUES_URL = "https://cuescore.com/live/league/";
         private DateTime lastDateTime;
         private int _currentYear;
         
@@ -66,7 +67,20 @@ namespace CuescoreSchedule
             List<League> leagues = new List<League>();
             if (document.DocumentNode != null)
             {
-                List<HtmlNode> nodes = document.DocumentNode.Descendants("a").Where(d => d.ParentNode.ParentNode.ParentNode.ParentNode.ParentNode.Attributes.Contains("class") && d.ParentNode.ParentNode.ParentNode.ParentNode.ParentNode.Attributes["class"].Value.Contains("standard")).ToList();
+                List<HtmlNode> nodes = document.DocumentNode.Descendants("a").Where(d =>
+                    d.ParentNode.ParentNode.ParentNode.Attributes.Contains("class") &&
+                    d.ParentNode.ParentNode.ParentNode.Attributes["class"].Value.Contains("standard") &&
+                    d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("bold") &&
+
+                    // KNBB
+                    d.ParentNode != null &&
+                    d.ParentNode.ParentNode != null &&
+                    d.ParentNode.ParentNode.ChildNodes.Count >= 2 &&
+                    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes.Count >= 1 &&
+                    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes[0].Attributes.Contains("href") &&
+                    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes[0].Attributes["href"].Value.Contains("KNBB")
+                ).ToList();
+
                 for (var i = 0; i < nodes.Count(); i++)
                 {
                     var node = nodes[i];
