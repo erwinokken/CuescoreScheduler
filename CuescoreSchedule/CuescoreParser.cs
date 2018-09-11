@@ -27,7 +27,7 @@ namespace CuescoreSchedule
     {
         // Example: https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571
         private const string LEAGUE_URL = "https://cuescore.com/tournament/league_title/{0}";
-        private const string LEAGUES_URL = "https://cuescore.com/live/league/";
+        private const string LEAGUES_URL = "https://cuescore.com/KNBB/tournaments?q=&season=2018&s=0&page=1";
         private DateTime lastDateTime;
         private int _currentYear;
         
@@ -44,7 +44,6 @@ namespace CuescoreSchedule
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml((string)HttpRuntime.Cache[url]);
             return document;
-            
         }
 
         private void CacheDocument(string url)
@@ -64,32 +63,45 @@ namespace CuescoreSchedule
 
         public List<League> GetLeagues(HtmlDocument document)
         {
-            List<League> leagues = new List<League>();
+            var leagues = new List<League>();
+
             if (document.DocumentNode != null)
             {
-                List<HtmlNode> nodes = document.DocumentNode.Descendants("a").Where(d =>
-                    d.ParentNode.ParentNode.ParentNode.Attributes.Contains("class") &&
-                    d.ParentNode.ParentNode.ParentNode.Attributes["class"].Value.Contains("standard") &&
-                    d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("bold") &&
-
-                    // KNBB
-                    d.ParentNode != null &&
-                    d.ParentNode.ParentNode != null &&
-                    d.ParentNode.ParentNode.ChildNodes.Count >= 2 &&
-                    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes.Count >= 1 &&
-                    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes[0].Attributes.Contains("href") &&
-                    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes[0].Attributes["href"].Value.Contains("KNBB")
-                ).ToList();
-
-                for (var i = 0; i < nodes.Count(); i++)
+                var trs = document.DocumentNode.Descendants("tr").Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("tournament")).ToList();
+                foreach (var tr in trs)
                 {
-                    var node = nodes[i];
+                    var thirdTd = tr.Descendants("td").ToList()[2];
+                    var secondDiv = thirdTd.Descendants("div").ToList()[1];
+                    var node = secondDiv.Descendants("a").First();
+
                     var leagueName = node.InnerText;
                     var href_split = node.Attributes["href"].Value.Split('/');
                     var leagueId = href_split[href_split.Count() - 1];
                     leagues.Add(new League() { ID = leagueId, Name = leagueName });
                 }
             }
+                //List<HtmlNode> nodes = document.DocumentNode.Descendants("a").Where(d =>
+                //    d.ParentNode.ParentNode.ParentNode.Attributes.Contains("class") &&
+                //    d.ParentNode.ParentNode.ParentNode.Attributes["class"].Value.Contains("standard") &&
+                //    d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("bold") &&
+
+                //    // KNBB
+                //    d.ParentNode != null &&
+                //    d.ParentNode.ParentNode != null &&
+                //    d.ParentNode.ParentNode.ChildNodes.Count >= 2 &&
+                //    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes.Count >= 1 &&
+                //    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes[0].Attributes.Contains("href") &&
+                //    d.ParentNode.ParentNode.ChildNodes[1].ChildNodes[0].Attributes["href"].Value.Contains("KNBB")
+                //).ToList();
+
+                //for (var i = 0; i < nodes.Count(); i++)
+                //{
+                //    var node = nodes[i];
+                //    var leagueName = node.InnerText;
+                //    var href_split = node.Attributes["href"].Value.Split('/');
+                //    var leagueId = href_split[href_split.Count() - 1];
+                //    leagues.Add(new League() { ID = leagueId, Name = leagueName });
+                //}
             return leagues;
         }
 
