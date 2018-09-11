@@ -130,27 +130,27 @@ namespace CuescoreSchedule
             var appointments = new List<Appointment>();
             if (document.DocumentNode != null)
             {
-                List<HtmlNode> nodes = document.DocumentNode.Descendants("span").Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("name") && d.InnerText.Equals(inputTeam)).ToList();
+                var nodes = document.DocumentNode.Descendants("tr")
+                    .Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("match") &&
+                    d.InnerHtml.Contains(inputTeam)).ToList();
 
-                for (var i = 0; i < nodes.Count(); i++)
+                foreach(var node in nodes)
                 {
-                    var node = nodes[i];
-                    var sharedParent = node.ParentNode.ParentNode;
-                    if (sharedParent.ChildNodes.Count > 7 && sharedParent.ChildNodes.Count != 25) // Ignore the rest
+                    //2, 8, 9, 10
+                    var possibleOpponent1 = node.Descendants("td").ToList()[1].FirstChild.ChildNodes[1].InnerText;
+                    var possibleOpponent2 = node.Descendants("td").ToList()[7].FirstChild.ChildNodes[1].InnerText;
+                    var opponent = (possibleOpponent1.Equals(inputTeam)) ? possibleOpponent2 : possibleOpponent1;
+                    var venue = node.Descendants("td").ToList()[8].InnerText;
+                    var dateTimeStr = node.Descendants("td").ToList()[9].FirstChild.InnerText;
+
+                    DateTime dateTime = DateTime.MinValue;
+                    DateTime.TryParse(dateTimeStr, out dateTime);
+                    appointments.Add(new Appointment()
                     {
-                        var possibleOpponent1 = sharedParent.ChildNodes[3].InnerText.Trim();
-                        var possibleOpponent2 = sharedParent.ChildNodes[17].InnerText.Trim();
-                        var opponent = (possibleOpponent1.Equals(inputTeam)) ? possibleOpponent2 : possibleOpponent1;
-                        var venue = sharedParent.ChildNodes[19].InnerText;
-                        var olddatetimestr = sharedParent.ChildNodes[21].InnerText.Replace("&nbsp;", "");
-                        DateTime dateTime = StringToDateTime(olddatetimestr);
-                        appointments.Add(new Appointment()
-                        {
-                            Name = opponent,
-                            DateTime = dateTime,
-                            Location = venue
-                        });
-                    }
+                        Name = opponent,
+                        DateTime = dateTime,
+                        Location = venue
+                    });
                 }
             }
             return appointments;
