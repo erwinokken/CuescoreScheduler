@@ -121,12 +121,13 @@ namespace CuescoreSchedule
                     var opponent = (possibleOpponent1.Equals(inputTeam)) ? possibleOpponent2 : possibleOpponent1;
                     var venue = node.Descendants("td").ToList()[8].InnerText;
                     var dateTimeStr = node.Descendants("td").ToList()[9].FirstChild.InnerText;
+                    var relLocation = (possibleOpponent1.Equals(inputTeam)) ? "Home" : "Away";
 
                     DateTime dateTime = DateTime.MinValue;
                     DateTime.TryParse(dateTimeStr, out dateTime);
                     appointments.Add(new Appointment()
                     {
-                        Name = opponent,
+                        Name = string.Format("{0} ({1})", opponent, relLocation),
                         DateTime = dateTime,
                         Location = venue
                     });
