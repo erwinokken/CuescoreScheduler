@@ -11,5 +11,6 @@ namespace CuescoreSchedule
         public string Name { get; set; }
         public DateTime DateTime { get; set; }
         public string Location { get; set; }
+        public string MatchId { get; set; }
     }
 }

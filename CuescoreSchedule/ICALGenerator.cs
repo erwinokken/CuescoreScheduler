@@ -51,7 +51,7 @@ DESCRIPTION:{3} - Data from cuescore.com - Created by propoolapp.com
 SUMMARY:{3}
 TRANSP:OPAQUE
 LOCATION:{4}
-END:VEVENT", GetTimestamp(appointment.DateTime), GetTimestamp(appointment.DateTime), GetTimestamp(appointment.DateTime.AddHours(4)), appointment.Name, appointment.Location);
+END:VEVENT", GetTimestamp(appointment.DateTime), appointment.MatchId, GetTimestamp(appointment.DateTime.AddHours(4)), appointment.Name, appointment.Location);
         }
 
         private static string GetTimestamp(DateTime value)

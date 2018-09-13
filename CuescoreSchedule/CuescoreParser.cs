@@ -122,6 +122,7 @@ namespace CuescoreSchedule
                     var venue = node.Descendants("td").ToList()[8].InnerText;
                     var dateTimeStr = node.Descendants("td").ToList()[9].FirstChild.InnerText;
                     var relLocation = (possibleOpponent1.Equals(inputTeam)) ? "Home" : "Away";
+                    var matchId = node.Attributes["id"].Value.Replace("match-", "");
 
                     DateTime dateTime = DateTime.MinValue;
                     DateTime.TryParse(dateTimeStr, out dateTime);
@@ -129,7 +130,8 @@ namespace CuescoreSchedule
                     {
                         Name = string.Format("{0} ({1})", opponent, relLocation),
                         DateTime = dateTime,
-                        Location = venue
+                        Location = venue,
+                        MatchId = matchId
                     });
                 }
             }
