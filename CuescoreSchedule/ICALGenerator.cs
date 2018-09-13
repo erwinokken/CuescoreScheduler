@@ -44,14 +44,14 @@ BEGIN:VEVENT
 DTSTAMP:{0}
 ORGANIZER;CN=Erwin Okken:MAILTO:info@propoolapp.com
 UID:cuescore-{1}
-DTSTART:{1}
-DTEND:{2}
+DTSTART:{2}
+DTEND:{3}
 CLASS:PRIVATE
-DESCRIPTION:{3} - Data from cuescore.com - Created by propoolapp.com
-SUMMARY:{3}
+DESCRIPTION:{4} - Data from cuescore.com - Created by propoolapp.com
+SUMMARY:{4}
 TRANSP:OPAQUE
-LOCATION:{4}
-END:VEVENT", GetTimestamp(appointment.DateTime), appointment.MatchId, GetTimestamp(appointment.DateTime.AddHours(4)), appointment.Name, appointment.Location);
+LOCATION:{5}
+END:VEVENT", GetTimestamp(appointment.DateTime), appointment.MatchId, GetTimestamp(appointment.DateTime), GetTimestamp(appointment.DateTime.AddHours(4)), appointment.Name, appointment.Location);
         }
 
         private static string GetTimestamp(DateTime value)
