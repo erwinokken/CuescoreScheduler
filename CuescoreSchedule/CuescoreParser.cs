@@ -27,7 +27,7 @@ namespace CuescoreSchedule
     {
         // Example: https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571
         private const string LEAGUE_URL = "https://cuescore.com/tournament/league_title/{0}";
-        private const string LEAGUES_URL = "https://cuescore.com/KNBB/tournaments?q=&season=2018&s=0&page={0}";
+        private const string LEAGUES_URL = "https://cuescore.com/KNBB";
         private DateTime lastDateTime;
         private int _currentYear;
         
@@ -56,9 +56,9 @@ namespace CuescoreSchedule
             HttpRuntime.Cache.Insert(url, html, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
         }
 
-        public HtmlDocument GetLeaguesDocument(int page)
+        public HtmlDocument GetLeaguesDocument()
         {
-            return GetDocumentCache(string.Format(LEAGUES_URL, page));
+            return GetDocumentCache(LEAGUES_URL);
         }
 
         public List<League> GetLeagues(HtmlDocument document)
@@ -67,7 +67,10 @@ namespace CuescoreSchedule
 
             if (document.DocumentNode != null)
             {
-                var trs = document.DocumentNode.Descendants("tr").Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("tournament")).ToList();
+                var tables = document.DocumentNode.Descendants("table").Where(x => x.GetAttributeValue("class", "").Contains("tournaments"));
+                var table = tables.Last();
+                
+                var trs = table.Descendants("tr").Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("tournament")).ToList();
                 foreach (var tr in trs)
                 {
                     var thirdTd = tr.Descendants("td").ToList()[2];
