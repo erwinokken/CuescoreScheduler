@@ -112,18 +112,21 @@ namespace CuescoreSchedule
             var appointments = new List<Appointment>();
             if (document.DocumentNode != null)
             {
-                var nodes = document.DocumentNode.Descendants("tr")
-                    .Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("match") &&
-                    d.InnerHtml.Contains(inputTeam)).ToList();
+                var originalNodes = document.DocumentNode.Descendants("tr");
+                var matchNodes = originalNodes.Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("match"));
+                var currentTeamMatchNodes = matchNodes.Where(x => HttpUtility.HtmlDecode(x.InnerHtml).Contains(inputTeam));
 
-                foreach(var node in nodes)
+                var nodes = currentTeamMatchNodes.ToList();
+
+                foreach (var node in nodes)
                 {
                     //2, 8, 9, 10
-                    var possibleOpponent1 = node.Descendants("td").ToList()[1].FirstChild.ChildNodes[1].InnerText;
-                    var possibleOpponent2 = node.Descendants("td").ToList()[7].FirstChild.ChildNodes[1].InnerText;
+                    var tds = node.Descendants("td").ToList();
+                    var possibleOpponent1 = HttpUtility.HtmlDecode(tds[2].FirstChild.ChildNodes[1].InnerText);
+                    var possibleOpponent2 = HttpUtility.HtmlDecode(tds[8].FirstChild.ChildNodes[1].InnerText);
                     var opponent = (possibleOpponent1.Equals(inputTeam)) ? possibleOpponent2 : possibleOpponent1;
-                    var venue = node.Descendants("td").ToList()[8].InnerText;
-                    var dateTimeStr = node.Descendants("td").ToList()[9].FirstChild.InnerText;
+                    var venue = tds[9].InnerText;
+                    var dateTimeStr = tds[10].FirstChild.InnerText;
                     var relLocation = (possibleOpponent1.Equals(inputTeam)) ? "Home" : "Away";
                     var matchId = node.Attributes["id"].Value.Replace("match-", "");
 
