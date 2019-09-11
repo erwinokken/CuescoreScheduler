@@ -14,11 +14,7 @@ namespace CuescoreSchedule
         {
             var parser = new CuescoreParser();
 
-            var leaguesPage = parser.GetLeaguesDocument();
-
-            var leagues = new List<League>();
-
-            leagues.AddRange(parser.GetLeagues(leaguesPage));
+            var leagues = parser.GetLeagues();
 
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("For which league do you want to select a team:");

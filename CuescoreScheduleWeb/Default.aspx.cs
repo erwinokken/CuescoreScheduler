@@ -20,12 +20,7 @@ namespace CuescoreScheduleWeb
 
         protected List<League> GetLeagues()
         {
-            var leaguesDocumentPage = parser.GetLeaguesDocument();
-            
-            var leagues = new List<League>();
-            leagues.AddRange(parser.GetLeagues(leaguesDocumentPage));
-
-            return leagues;
+            return parser.GetLeagues();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace CuescoreSchedule
     {
         // Example: https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571
         private const string LEAGUE_URL = "https://cuescore.com/tournament/league_title/{0}";
-        private const string LEAGUES_URL = "https://cuescore.com/KNBB";
+        private const string LEAGUES_URL = "https://cuescore.com/KNBB/tournaments?q=&d=0&season=0&s=0";
         private DateTime lastDateTime;
         private int _currentYear;
         
@@ -41,7 +41,7 @@ namespace CuescoreSchedule
             if (HttpRuntime.Cache[url] == null)
                 CacheDocument(url);
 
-            HtmlDocument document = new HtmlDocument();
+            var document = new HtmlDocument();
             document.LoadHtml((string)HttpRuntime.Cache[url]);
             return document;
         }
@@ -49,28 +49,57 @@ namespace CuescoreSchedule
         private void CacheDocument(string url)
         {
             // Download data
-            WebClient client = new WebClient();
+            var client = new WebClient();
             var data = client.DownloadData(url);
             var html = Encoding.UTF8.GetString(data);
 
             HttpRuntime.Cache.Insert(url, html, null, DateTime.Now.AddDays(1), Cache.NoSlidingExpiration);
         }
 
-        public HtmlDocument GetLeaguesDocument()
+        public List<League> GetLeagues()
         {
-            return GetDocumentCache(LEAGUES_URL);
+            var document = GetDocumentCache(LEAGUES_URL);
+            var amountOfPages = this.GetAmountOfPages(document);
+            var leagues = new List<League>();
+            for(var curPage = 1; curPage <= amountOfPages; curPage++)
+            {
+                leagues.AddRange(GetLeaguesForPage(curPage));
+            }
+
+            //if (documentNode != null)
+            //{
+            //    var pages = documentNode.Descendants(".pages a").Count();
+            //    var tables = documentNode.Descendants("table").Where(x => x.GetAttributeValue("class", "").Contains("tournaments"));
+            //    var table = tables.Last();
+            //    table.AppendChild(tables.First());
+                
+
+            //}
+
+            return leagues;
         }
 
-        public List<League> GetLeagues(HtmlDocument document)
+        private int GetAmountOfPages(HtmlDocument document)
         {
-            var leagues = new List<League>();
-
-            if (document.DocumentNode != null)
+            var documentNode = document.DocumentNode;
+            if (documentNode != null)
             {
-                var tables = document.DocumentNode.Descendants("table").Where(x => x.GetAttributeValue("class", "").Contains("tournaments"));
-                var table = tables.Last();
-                
-                var trs = table.Descendants("tr").Where(d => d.Attributes.Contains("class") && d.Attributes["class"].Value.Contains("tournament")).ToList();
+                return documentNode.SelectNodes("//span[contains(@class, 'pages')]/a").Count();
+            }
+
+            return -1;
+        }
+
+        private List<League> GetLeaguesForPage(int page)
+        {
+            var url = $"{LEAGUES_URL}&page={page}";
+            var document = GetDocumentCache(url);
+            var leagues = new List<League>();
+            var documentNode = document.DocumentNode;
+
+            if (documentNode != null)
+            {
+                var trs = documentNode.SelectNodes("//tr[contains(@class, 'tournament')]").ToList();
                 foreach (var tr in trs)
                 {
                     var thirdTd = tr.Descendants("td").ToList()[2];
@@ -83,7 +112,6 @@ namespace CuescoreSchedule
                     leagues.Add(new League() { ID = leagueId, Name = leagueName });
                 }
             }
-
             return leagues;
         }
 
@@ -94,10 +122,10 @@ namespace CuescoreSchedule
 
         public List<string> GetTeams(HtmlDocument document)
         {
-            List<string> teams = new List<string>();
+            var teams = new List<string>();
             if (document.DocumentNode != null)
             {
-                List<HtmlNode> nodes = document.DocumentNode.Descendants("span").Where(d => d.ParentNode.ParentNode.ParentNode.ParentNode.Id.Equals("standingTableRR") && d.Attributes.Contains("class") && d.Attributes["class"].Value.Trim().Equals("name") && d.InnerText.Trim() != "").ToList();
+                var nodes = document.DocumentNode.Descendants("span").Where(d => d.ParentNode.ParentNode.ParentNode.ParentNode.Id.Equals("standingTableRR") && d.Attributes.Contains("class") && d.Attributes["class"].Value.Trim().Equals("name") && d.InnerText.Trim() != "").ToList();
                 for (var i = 0; i < nodes.Count(); i++)
                 {
                     var node = nodes[i];
