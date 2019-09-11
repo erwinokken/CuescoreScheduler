@@ -25,9 +25,10 @@ namespace CuescoreSchedule
 {
     public class CuescoreParser
     {
-        // Example: https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571
-        private const string LEAGUE_URL = "https://cuescore.com/tournament/league_title/{0}";
-        private const string LEAGUES_URL = "https://cuescore.com/KNBB/tournaments?q=&d=0&season=0&s=0";
+        private const string SEARCHTERM = "2019/2020";
+
+        private const string LEAGUE_URL = "https://cuescore.com/tournament/league_title/{0}"; // Example: https://cuescore.com/tournament/2017%252F2018+Pool+Noord+Eerste+Klasse/1548571
+        private const string LEAGUES_URL = "https://cuescore.com/KNBB/tournaments?q="+SEARCHTERM+"&d=0&season=0&s={0}"; // s: 0 = actief/afgerond, 2 = komend
         private DateTime lastDateTime;
         private int _currentYear;
         
@@ -58,23 +59,18 @@ namespace CuescoreSchedule
 
         public List<League> GetLeagues()
         {
-            var document = GetDocumentCache(LEAGUES_URL);
-            var amountOfPages = this.GetAmountOfPages(document);
             var leagues = new List<League>();
-            for(var curPage = 1; curPage <= amountOfPages; curPage++)
+
+            for (var s = 0; s <= 2; s += 2)
             {
-                leagues.AddRange(GetLeaguesForPage(curPage));
+                var url = string.Format(LEAGUES_URL, s);
+                var document = GetDocumentCache(url);
+                var amountOfPages = this.GetAmountOfPages(document);
+                for (var curPage = 1; curPage <= amountOfPages; curPage++)
+                {
+                    leagues.AddRange(GetLeaguesForPage(curPage, s));
+                }
             }
-
-            //if (documentNode != null)
-            //{
-            //    var pages = documentNode.Descendants(".pages a").Count();
-            //    var tables = documentNode.Descendants("table").Where(x => x.GetAttributeValue("class", "").Contains("tournaments"));
-            //    var table = tables.Last();
-            //    table.AppendChild(tables.First());
-                
-
-            //}
 
             return leagues;
         }
@@ -84,15 +80,16 @@ namespace CuescoreSchedule
             var documentNode = document.DocumentNode;
             if (documentNode != null)
             {
-                return documentNode.SelectNodes("//span[contains(@class, 'pages')]/a").Count();
+                var pages = documentNode.SelectNodes("//span[contains(@class, 'pages')]/a");
+                return (pages != null) ? pages.Count() : 1;
             }
 
             return -1;
         }
 
-        private List<League> GetLeaguesForPage(int page)
+        private List<League> GetLeaguesForPage(int page, int s)
         {
-            var url = $"{LEAGUES_URL}&page={page}";
+            var url = string.Format($"{LEAGUES_URL}&page={page}", s);
             var document = GetDocumentCache(url);
             var leagues = new List<League>();
             var documentNode = document.DocumentNode;
